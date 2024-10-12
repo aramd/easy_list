@@ -1,2 +1,5 @@
 .idea/
 target/
+
+Secrets.toml
+ansible/inventory.ini
