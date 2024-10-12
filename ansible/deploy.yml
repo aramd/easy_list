@@ -1,0 +1,50 @@
+---
+- name: Deploy EasyList Project on Raspberry Pi
+  hosts: raspberry_pi
+  become: yes
+  tasks:
+
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker Compose is installed
+      apt:
+        name: docker-compose
+        state: present
+        update_cache: yes
+
+    - name: Create project directory on Raspberry Pi
+      file:
+        path: /home/pi/easy_list
+        state: directory
+        mode: '0755'
+
+    - name: Upload Rust project files to Raspberry Pi
+      copy:
+        src: "../{{ item }}"
+        dest: /home/pi/easy_list/
+      with_items:
+        - Cargo.toml
+        - Dockerfile
+        - Secrets.toml
+        - docker-compose.yml
+
+    - name: Upload src folder to Raspberry Pi
+      copy:
+        src: ../src/
+        dest: /home/pi/easy_list/src/
+        mode: '0644'
+
+    - name: Ensure the user pi is in the docker group
+      user:
+        name: pi
+        groups: docker
+        append: yes
+
+    - name: Run the project with Docker Compose
+      command: docker-compose up --build -d
+      args:
+        chdir: /home/pi/easy_list
