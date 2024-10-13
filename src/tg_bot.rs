@@ -33,7 +33,7 @@ impl TgBot {
                         dptree::filter(|msg: Message| {
                             // TODO make thread id configurable
                             msg.chat.is_supergroup()
-                                && msg.thread_id == Some(ThreadId(MessageId(2)))
+                                && msg.thread_id == Some(ThreadId(MessageId(163)))
                         })
                         .endpoint(group_chat_handler),
                     ),
